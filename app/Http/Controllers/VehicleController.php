@@ -18,7 +18,12 @@ class VehicleController extends Controller
     public function index()
     {
         $vehicles = Vehicle::all();
-
+        
+        if(!$vehicles)
+        {
+         return response()->json(['message' => 'There are no Vehicles ', 'code' => 404], 404);
+        }
+        // $vehicles = json_encode($vehicles, JSON_FORCE_OBJECT);
         return response()->json(['data' => $vehicles], 200);
         
     }
