@@ -2,87 +2,78 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Maker;
 use App\Vehicle;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-class MakerVehiclesController extends Controller
-{
+use App\Http\Requests\CreateVehicleRequest;
+class MakerVehiclesController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index($id)
     {
-         $maker = Maker::find($id);
-        // Caused Error
+        $maker = Maker::find($id);
         if(!$maker)
         {
-            return response()->json(['message' => 'This Maker does not exist', 'code' => 404], 404);
+            return response()->json(['message' => 'This maker does not exist', 'code' => 404], 404);
         }
-        // Caused Success
         return response()->json(['data' => $maker->vehicles], 200);
-
-        
     }
-
-
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function store(Request $request)
+    public function store(CreateVehicleRequest $request, $makerId)
     {
-        //
+        $maker = Maker::find($makerId);
+        if(!$maker)
+        {
+            return response()->json(['message' => 'This maker does not exist', 'code' => 404], 404);
+        }
+        $values = $request->all();
+        $maker->vehicles()->create($values);
+        return response()->json(['message' => 'The vehicle associated was created'], 201);
     }
-
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function show($id, $vechicleId)
+    public function show($id, $vehicleId)
     {
-         $maker = Maker::find($id);
-        // Caused Error
+        $maker = Maker::find($id);
         if(!$maker)
         {
-            return response()->json(['message' => 'This Maker does not exist', 'code' => 404], 404);
+            return response()->json(['message' => 'This maker does not exist', 'code' => 404], 404);
         }
-        // Caused Success
-        $vehicleReturn = $maker->vehicles->find($vechicleId);
-        if(!$vehicleReturn) {
-           return response()->json(['message' => 'This Vehicle does not exist', 'code' => 404], 404); 
+        $vehicle = $maker->vehicles->find($vehicleId);
+        if(!$vehicle)
+        {
+            return response()->json(['message' => 'This vehicle does not exist for this maker', 'code' => 404], 404);
         }
-
-            return response()->json(['data' => $vehicleReturn], 200);
+        return response()->json(['data' => $vehicle], 200);
     }
-
-
-
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
         //
     }
-
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
