@@ -6,6 +6,13 @@ use App\Maker;
 use App\Vehicle;
 use App\Http\Requests\CreateVehicleRequest;
 class MakerVehiclesController extends Controller {
+
+
+
+    public function __construct(){
+         $this->middleware('auth.basic',['except' => ['index', 'show']]);
+    }
+        
     /**
      * Display a listing of the resource.
      *
