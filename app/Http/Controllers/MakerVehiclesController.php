@@ -10,7 +10,7 @@ class MakerVehiclesController extends Controller {
 
 
     public function __construct(){
-         $this->middleware('auth.basic',['except' => ['index', 'show']]);
+         $this->middleware('auth.basis.once' ,['except' => ['index', 'show']]);
     }
         
     /**
